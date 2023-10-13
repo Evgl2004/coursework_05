@@ -33,7 +33,7 @@ def create_database(database_name: str, params: dict) -> None:
     :return:
     """
 
-    # первоначальное подключение к СУДБ к системной базе данных.
+    # первоначальное подключение к системе управления базами данных.
     connection = psycopg2.connect(dbname='postgres', **params)
     # выставляем параметр автоматически фиксировать транзакции после выполнения каждого запроса к СУБД.
     connection.autocommit = True

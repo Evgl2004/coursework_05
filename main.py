@@ -1,5 +1,6 @@
 from uteils.func import read_config, create_database, create_tables, save_data_to_database
 from src.api import HeadHunterEmployerAPI, HeadHunterVacancyAPI
+from src.db import DBManager
 
 
 def main():
@@ -33,6 +34,23 @@ def main():
         save_data_to_database(employer, vacancy, 'vacancies', params)
 
     print("Данные успешно записаны в БД")
+
+    db_vacancies = DBManager('vacancies', params)
+
+    for selection_detailed_records in db_vacancies.get_companies_and_vacancies_count():
+        print(selection_detailed_records)
+
+    for selection_detailed_records in db_vacancies.get_all_vacancies():
+        print(selection_detailed_records)
+
+    for selection_detailed_records in db_vacancies.get_avg_salary():
+        print(selection_detailed_records)
+
+    for selection_detailed_records in db_vacancies.get_vacancies_with_higher_salary():
+        print(selection_detailed_records)
+
+    for selection_detailed_records in db_vacancies.get_vacancies_with_keyword("Продавец"):
+        print(selection_detailed_records)
 
 
 if __name__ == "__main__":
