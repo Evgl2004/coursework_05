@@ -32,7 +32,7 @@ def main():
         vacancy = HeadHunterVacancyAPI(employer_id)
         vacancy.get_vacancy()
 
-        save_data_to_database(employer, vacancy, 'vacancies', params)
+        save_data_to_database(employer.result_list, vacancy.result_list, 'vacancies', params)
 
     print("Данные успешно записаны в БД")
 

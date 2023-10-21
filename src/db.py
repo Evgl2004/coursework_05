@@ -24,14 +24,14 @@ class DBManager:
         Переопределённое представление строкового значения экземпляра класса.
         :return: Строка с данными экземпляра класса.
         """
-        return f'url_api = {self.__database_name}'
+        return f'database_name = {self.__database_name}'
 
     def __repr__(self):
         """
         Служебное (внутренне) представление строкового значения экземпляра класса.
         :return: Строка с данными экземпляра класса.
         """
-        return f"{self.__class__.__name__}('{self.__database_name}', '{self.__params}')"
+        return f"{self.__class__.__name__}('{self.__database_name}')"
 
     def __execute_request(self, text_request):
         """
@@ -58,7 +58,7 @@ class DBManager:
             if connection is not None:
                 connection.close()
 
-    def get_companies_and_vacancies_count(self) :
+    def get_companies_and_vacancies_count(self):
         """
         Метод возвращает список всех компаний и количество вакансий у каждой компании.
         :return: Возвращает выборку детальных записей.

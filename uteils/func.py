@@ -71,6 +71,13 @@ def create_tables(database_name: str, params: dict) -> None:
     try:
         # инициализация курсора для написания запросов в СУБД.
         with connection.cursor() as cursor:
+            # перед созданием новых таблиц удаляем таблицы, если они уже существует.
+            cursor.execute("""
+                DROP TABLE IF EXISTS vacancies;
+                DROP TABLE IF EXISTS employers;
+            """)
+            connection.commit()
+
             # создаём таблицу "Работодатель" и соответствующие поля.
             cursor.execute("""
                 CREATE TABLE employers (
@@ -114,15 +121,15 @@ def create_tables(database_name: str, params: dict) -> None:
             connection.close()
 
 
-def save_data_to_database(object_employer,
-                          object_vacancy,
+def save_data_to_database(result_list_employer,
+                          result_list_vacancy,
                           database_name: str,
                           params: dict) -> None:
     """
     Функция производит внесение данных полученных из запроса API с сайта вакансий, представленных в виде словарей
     класса в СУБД (запись).
-    :param object_employer: Экземпляр класса Работодатель.
-    :param object_vacancy: Экземпляр класса Вакансии.
+    :param result_list_employer: Словарь с данными по Работодателю.
+    :param result_list_vacancy: Словарь с данными по Вакансиям.
     :param database_name: Имя базы данных в которой будут производиться работы (выполняться запросы).
     :param params: Набор передаваемых параметров для подключения к СУБД.
     :return:
@@ -148,19 +155,19 @@ def save_data_to_database(object_employer,
                 VALUES (%s, %s, %s, %s, %s, %s)
                 RETURNING id
                 """,
-                (object_employer.result_list[0]['id'],
-                 object_employer.result_list[0]['name'],
-                 object_employer.result_list[0]['open_vacancies'],
-                 object_employer.result_list[0]['site_url'],
-                 object_employer.result_list[0]['trusted'],
-                 object_employer.result_list[0]['accredited_it_employer'])
+                (result_list_employer[0]['id'],
+                 result_list_employer[0]['name'],
+                 result_list_employer[0]['open_vacancies'],
+                 result_list_employer[0]['site_url'],
+                 result_list_employer[0]['trusted'],
+                 result_list_employer[0]['accredited_it_employer'])
             )
 
             # после запроса получаем идентификатор добавленной записи, чтобы организовать связь с таблицей Вакансии.
             employer_id = cursor.fetchone()[0]
 
             # вносим запись в таблицу "Вакансии" обходя весь список с данными.
-            for item in object_vacancy.result_list:
+            for item in result_list_vacancy:
                 cursor.execute("""
                     INSERT INTO vacancies (
                         id_vacancy,
